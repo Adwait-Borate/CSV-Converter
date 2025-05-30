@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard CSV Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group textarea:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 300px;
+            line-height: 1.5;
+        }
+
+        .example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #495057;
+            white-space: pre-line;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #0c5460;
+            text-align: center;
+            display: none;
+        }
+
+        .stats.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-group textarea {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Flashcard CSV Generator</h1>
+            <p>Convert your Q&A content into CSV files</p>
+        </div>
+
+        <form id="flashcardForm">
+            <div class="form-group">
+                <label for="content">Q&A Content:</label>
+                <textarea 
+                    id="content" 
+                    name="content" 
+                    placeholder="Paste your Q&A content here..."
+                    required
+                ></textarea>
+                <div class="example">Example format:
+Question: What is Multer?
+Answer: Multer is a node.js middleware for handling multipart/form-data.
+
+Question: What is Express.js?
+Answer: Express.js is a web application framework for Node.js, designed for building web applications and APIs.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="filename">CSV Filename:</label>
+                <input 
+                    type="text" 
+                    id="filename" 
+                    name="filename" 
+                    placeholder="flashcards.csv"
+                    value="flashcards.csv"
+                >
+            </div>
+
+            <button type="submit" class="generate-btn" id="generateBtn">
+                Generate & Download CSV
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Generating your CSV file...</p>
+        </div>
+
+        <div class="status" id="status"></div>
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('flashcardForm');
+        const contentTextarea = document.getElementById('content');
+        const filenameInput = document.getElementById('filename');
+        const generateBtn = document.getElementById('generateBtn');
+        const loading = document.getElementById('loading');
+        const status = document.getElementById('status');
+        const stats = document.getElementById('stats');
+
+        // Auto-resize textarea
+        contentTextarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const content = contentTextarea.value.trim();
+            const filename = filenameInput.value.trim() || 'flashcards.csv';
+            
+            if (!content) {
+                showStatus('Please enter some Q&A content.', 'error');
+                return;
+            }
+
+            // Show loading state
+            generateBtn.disabled = true;
+            loading.classList.add('show');
+            status.style.display = 'none';
+            stats.classList.remove('show');
+
+            try {
+                const response = await fetch('/generate-csv', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        filename: filename
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to generate CSV');
+                }
+
+                // Get the CSV content
+                const csvContent = await response.text();
+                
+                // Count the number of flashcards
+                const cardCount = csvContent.split('\n').filter(line => line.trim()).length;
+                
+                // Create and trigger download
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                // Show success message
+                showStatus('CSV file generated and downloaded successfully!', 'success');
+                showStats(`Generated ${cardCount} flashcard${cardCount !== 1 ? 's' : ''}`);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                // Hide loading state
+                generateBtn.disabled = false;
+                loading.classList.remove('show');
+            }
+        });
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            // Auto-hide after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function showStats(message) {
+            stats.textContent = message;
+            stats.classList.add('show');
+        }
+
+        // Add some sample content for demo purposes
+        window.addEventListener('load', function() {
+            if (!contentTextarea.value) {
+                contentTextarea.value = `Question: What is Multer?
+Answer: Multer is a node.js middleware for handling multipart/form-data.
+
+Question: What is Express.js?
+Answer: Express.js is a web application framework for Node.js, designed for building web applications and APIs.
+
+Question: What is the purpose of middleware in Express?
+Answer: Middleware functions are functions that have access to the request object, response object, and the next middleware function in the application's request-response cycle.`;
+            }
+        });
+    </script>
+</body>
+</html>

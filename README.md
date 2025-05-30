@@ -1,6 +1,6 @@
 # Flashcard CSV Generator
 
-A web application that converts question and answer content into CSV files suitable for importing into flashcard applications like Anki.
+A web application that converts question and answer content into CSV files .
 
 
 ## 📝 Features
@@ -8,7 +8,6 @@ A web application that converts question and answer content into CSV files suita
 - Convert Q&A format text into properly formatted CSV files
 - Simple, intuitive web interface
 - Automatic formatting of CSV content with proper escaping
-- Compatible with Anki and other flashcard applications
 - Download generated CSV files with custom filenames
 - Responsive design that works on desktop and mobile
 
@@ -73,38 +72,6 @@ To run in production:
 npm start
 ```
 
-## 🌐 Deployment on Vercel
-
-This application is configured for easy deployment on Vercel.
-
-1. Fork or clone this repository to your GitHub account
-
-2. Sign up for a [Vercel account](https://vercel.com) if you don't have one
-
-3. Connect your GitHub account to Vercel
-
-4. Import your repository in Vercel:
-   - Click "Add New" → "Project"
-   - Select your repository
-   - Keep all default settings (the vercel.json file handles the configuration)
-   - Click "Deploy"
-
-5. Once deployed, Vercel will provide you with a URL to access your application
-
-### Manual Deployment with Vercel CLI
-
-1. Install Vercel CLI:
-   ```bash
-   npm install -g vercel
-   ```
-
-2. Navigate to your project directory and run:
-   ```bash
-   vercel
-   ```
-
-3. Follow the on-screen instructions to complete the deployment
-
 ## 📁 Project Structure
 
 ```
@@ -117,16 +84,6 @@ This application is configured for easy deployment on Vercel.
 └── .gitignore           # Git ignore file
 ```
 
-## 📥 Importing into Anki
-
-1. Open Anki on your computer
-2. Click "Import File" (or press Ctrl+Shift+I)
-3. Select your downloaded CSV file
-4. In the import dialog:
-   - Set "Fields separated by" to "Comma"
-   - Ensure "First field is question" is checked
-   - Choose the appropriate deck
-5. Click "Import"
 
 ## 🛠️ Technology Stack
 
@@ -134,9 +91,6 @@ This application is configured for easy deployment on Vercel.
 - **Frontend**: HTML, CSS, JavaScript
 - **Deployment**: Vercel
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👥 Contributing
 
@@ -148,6 +102,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📞 Support
-
-If you encounter any issues or have questions, please [open an issue](https://github.com/yourusername/flashcard-csv-generator/issues).

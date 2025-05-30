@@ -23,8 +23,8 @@ Check out the live application [Website](https://csv-converter-delta.vercel.app/
    Question: What is Express.js?
    Answer: Express.js is a web application framework for Node.js.
 
-   Question: What is Anki?
-   Answer: Anki is a flashcard program that utilizes spaced repetition.
+   Question: What is Typescript?
+   Answer: TypeScript is a programming lang.
    ```
 
 2. Enter a filename for your CSV file (default: `flashcards.csv`)
